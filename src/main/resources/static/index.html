@@ -172,6 +172,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/login.html";
+        }
+        function logout() {
+            localStorage.clear();
+            window.location.href = "/login.html";
+        }
+
         function jwtFetch(url, options = {}) {
             const token = localStorage.getItem("token");
 

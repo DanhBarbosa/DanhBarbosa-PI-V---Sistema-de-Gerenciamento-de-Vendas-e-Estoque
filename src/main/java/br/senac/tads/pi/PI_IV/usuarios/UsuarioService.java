@@ -39,7 +39,7 @@ public class UsuarioService {
     public Usuario atualizarUsuario(Long id, String nome, String senha) {
         Usuario usuario = buscarUsuarioPorId(id);
         usuario.setNome(nome);
-        usuario.setSenha(senha);
+        usuario.setSenha(passwordEncoder.encode(senha));
         return usuario;
     }
 

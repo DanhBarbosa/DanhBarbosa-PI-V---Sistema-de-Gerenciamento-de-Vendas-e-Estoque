@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     private JwtUserDetailsService userDetailsService;
@@ -35,7 +34,6 @@ public class AuthController {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(personLoginDto.login(), personLoginDto.senha());
             authenticationManager.authenticate(authenticationToken);
             JwtToken token = userDetailsService.getAuthenticatedToken(personLoginDto.login());
-
             return ResponseEntity.ok(token);
         } catch (AuthenticationException e) {
             log.warn("Error", e.getMessage());

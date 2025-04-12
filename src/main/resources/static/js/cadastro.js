@@ -152,7 +152,7 @@ function preencherModalComDados(dados) {
 
     console.log(dados.nome);
 
-    document.getElementById('senha').value = dados.senha || '';
+    document.getElementById('senha').value = '';
 
     // Campos bloqueados para edição
     document.getElementById('nome').value = dados.nome || ''; // bloqueado

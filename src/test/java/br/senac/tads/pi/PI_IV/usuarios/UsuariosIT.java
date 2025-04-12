@@ -1,19 +1,19 @@
 package br.senac.tads.pi.PI_IV.usuarios;
 
 import br.senac.tads.pi.PI_IV.JwtAuthentication;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
-
-import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
+@Sql(scripts = "/sql/insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/sql/delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class UsuariosIT {
 
     @Autowired
@@ -25,7 +25,7 @@ public class UsuariosIT {
         webTestClient
                 .post()
                 .uri("api/usuarios")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioRequestoDTO("João Marques", "joao@gmail.com", "123456"))
                 .exchange()
@@ -39,7 +39,7 @@ public class UsuariosIT {
         webTestClient
                 .post()
                 .uri("api/usuarios")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioRequestoDTO("João Marques", "joao@gmail.com", null))
                 .exchange()
@@ -47,14 +47,13 @@ public class UsuariosIT {
     }
 
 
-
     // Buscar Usuario Por ID Válido
     @Test
     public void buscarUsuarioValido_Retorno200() {
         Usuario responseBody = webTestClient
                 .get()
-                .uri("api/usuarios/100")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .uri("api/usuarios/101")
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(200)
                 .expectBody(Usuario.class)
@@ -69,9 +68,9 @@ public class UsuariosIT {
         webTestClient
                 .get()
                 .uri("api/usuarios/300")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .exchange()
-                .expectStatus().isEqualTo(403);
+                .expectStatus().isEqualTo(404);
     }
 
     // Editar Usuario Válido
@@ -79,8 +78,8 @@ public class UsuariosIT {
     void editarUsuarioValido_Retorno200() {
         UsuarioListResponseDTO responseBody = webTestClient
                 .patch()
-                .uri("api/usuarios/100")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .uri("api/usuarios/101")
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioUpdateRequestoDTO("Admin Master", "1234567"))
                 .exchange()
@@ -94,10 +93,10 @@ public class UsuariosIT {
     // Editar Usuario Inválido
     @Test
     void editarUsuarioInvalido_Retorno404() {
-      webTestClient
+        webTestClient
                 .put()
                 .uri("api/usuarios/1000")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioUpdateRequestoDTO("Admin Master", "1234567"))
                 .exchange()
@@ -111,7 +110,7 @@ public class UsuariosIT {
         webTestClient
                 .delete()
                 .uri("api/usuarios/1")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(200);
     }

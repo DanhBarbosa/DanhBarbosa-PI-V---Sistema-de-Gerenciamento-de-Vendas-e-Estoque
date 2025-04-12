@@ -1,0 +1,1 @@
+insert into tb_usuarios (id, nome, login, senha) values (101, 'admin', 'admin@gmail.com', '$2a$12$LV44BPsWuCbVAqZ2cNU6GuJeFjdOKrcCheZ2AdX56Hko0s53xYBOC');
