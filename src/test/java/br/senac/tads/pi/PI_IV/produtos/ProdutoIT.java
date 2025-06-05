@@ -1,19 +1,22 @@
 package br.senac.tads.pi.PI_IV.produtos;
 
 import br.senac.tads.pi.PI_IV.JwtAuthentication;
-import br.senac.tads.pi.PI_IV.produto.Produto;
+import br.senac.tads.pi.PI_IV.produto.model.Produto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
+@Sql(scripts = "/sql/insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "/sql/delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ProdutoIT {
 
     @Autowired
@@ -25,7 +28,7 @@ public class ProdutoIT {
         webTestClient
                 .post()
                 .uri("api/produtos")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new Produto("01234567890", "Produto 1", "Descrição Produto 1",
                         "Marca Produto 1", 12, 20.0))
@@ -41,7 +44,7 @@ public class ProdutoIT {
         webTestClient
                 .post()
                 .uri("api/produtos")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new Produto("01234567890", null, "Descrição Produto 1",
                         "Marca Produto 1", 12, 20.0))
@@ -56,7 +59,7 @@ public class ProdutoIT {
         List<Produto> responseBody = webTestClient
                 .get()
                 .uri("api/produtos")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(Produto.class)
@@ -70,23 +73,23 @@ public class ProdutoIT {
     public void buscarProdutoValido_Retorno200() {
         Produto responseBody = webTestClient
                 .get()
-                .uri("api/produtos/14")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .uri("api/produtos/100")
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(200)
                 .expectBody(Produto.class)
                 .returnResult().getResponseBody();
         Assertions.assertThat(responseBody.getId()).isNotNull();
-        Assertions.assertThat(responseBody.getNome()).isEqualTo("Produto 1");
+        Assertions.assertThat(responseBody.getNome()).isEqualTo("Produto 100");
     }
 
     // Buscar Produto Por ID Inválido
     @Test
-    public void buscarProdutoInvalido_Retorno400() {
+    public void buscarProdutoInvalido_Retorno404() {
         webTestClient
                 .get()
-                .uri("api/produtos/100")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .uri("api/produtos/101")
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(404);
     }
@@ -96,8 +99,8 @@ public class ProdutoIT {
     void editarProdutoValido_Retorno200() {
         Produto responseBody = webTestClient
                 .put()
-                .uri("api/produtos/14")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .uri("api/produtos/100")
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new Produto("01234567890", "Novo Nome Produto 1", "Descrição Produto 1",
                         "Marca Produto 1", 12, 20.0))
@@ -105,25 +108,22 @@ public class ProdutoIT {
                 .expectStatus().isOk()
                 .expectBody(Produto.class)
                 .returnResult().getResponseBody();
-        Assertions.assertThat(responseBody.getId()).isNotNull();
+
         Assertions.assertThat(responseBody.getNome()).isEqualTo("Novo Nome Produto 1");
     }
 
     // Editar Produto Inválido
     @Test
     void editarProdutoInvalido_Retorno404() {
-        Produto responseBody = webTestClient
+       webTestClient
                 .put()
-                .uri("api/produtos/100")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .uri("api/produtos/101")
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new Produto("01234567890", "Novo Nome Produto 1", "Descrição Produto 1",
                         "Marca Produto 1", 12, 20.0))
                 .exchange()
-                .expectStatus().isEqualTo(404)
-                .expectBody(Produto.class)
-                .returnResult().getResponseBody();
-        Assertions.assertThat(responseBody.getId()).isNull();
+                .expectStatus().isNotFound();
     }
 
     // Excluir Produto
@@ -132,7 +132,7 @@ public class ProdutoIT {
         webTestClient
                 .delete()
                 .uri("api/produtos/1")
-                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@gmail.com", "1234567"))
+                .headers(JwtAuthentication.getHeadersAuthorization(webTestClient, "admin@test.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(204);
     }

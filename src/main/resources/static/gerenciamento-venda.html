@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gerenciamento - Vendas</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    <style>
+
+        body {
+            display: flex;
+        }
+
+        #sidebar {
+            width: 280px;
+            height: 100vh;
+            background: #343a40;
+            color: #fff;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+
+        #sidebar.collapsed {
+            width: 60px;
+        }
+
+        #sidebar .nav-link, #sidebar .nav-item {
+            color: #fff;
+        }
+
+        #content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hamburger {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+            color: #fff;
+        }
+
+        .nav-link .icon-title {
+            display: flex;
+            align-items: center;
+        }
+
+        #sidebar.collapsed .nav-link .item-name {
+            display: none;
+        }
+
+        .sub-menu {
+            padding-left: 20px;
+            display: none;
+        }
+
+        .sub-menu.active {
+            display: block;
+        }
+
+        .icon-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .icon-title i {
+            margin-right: 10px;
+        }
+
+        .modal-dialog {
+            max-width: 40%;
+        }
+
+        .error-message {
+            color: red;
+            display: none;
+        }
+
+        .table-container, .product-code-container {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .table-container {
+            width: 70%;
+        }
+
+        .product-code-container {
+            width: 30%;
+        }
+
+        .total {
+            margin-top: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .content-body {
+            display: flex;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div id="sidebar" class="collapsed">
+    <div class="hamburger" onclick="toggleSidebar()">
+        <i class="bi bi-list"></i>
+    </div>
+    <div class="nav flex-column">
+        <a href="index.html" class="nav-link">
+            <div class="icon-title" title="Página Inicial">
+                <i class="bi bi-house"></i>
+                <span class="item-name">Home</span>
+            </div>
+        </a>
+
+        <div class="nav-link" id="menuCadastros" onclick="toggleSubMenu('cadastroSubMenu')">
+            <div class="icon-title" title="Cadastro de Usuários">
+                <i class="bi bi-person-plus"></i>
+                <span class="item-name">Cadastro</span>
+            </div>
+        </div>
+        <div class="sub-menu" id="cadastroSubMenu">
+            <a href="gerenciamento-cadastro.html" class="nav-link">
+                <div class="icon-title" title="Gerenciamento de Usuário">
+                    <i class="bi bi-people"></i>
+                    <span class="item-name">Gerenciamento de Usuário</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="nav-link" onclick="toggleSubMenu('estoqueSubMenu')">
+            <div class="icon-title" title="Estoque de Produtos">
+                <i class="bi bi-box-seam"></i>
+                <span class="item-name">Estoque</span>
+            </div>
+        </div>
+        <div class="sub-menu" id="estoqueSubMenu">
+            <a href="gerenciamento-estoque.html" class="nav-link">
+                <div class="icon-title" title="Gerenciamento de Produtos">
+                    <i class="bi bi-tools"></i>
+                    <span class="item-name">Gerenciamento de Produtos</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="nav-link" onclick="toggleSubMenu('relatorioSubMenu')">
+            <div class="icon-title" title="Gerar Relatório">
+                <i class="bi bi-file-earmark-text"></i>
+                <span class="item-name">Relatório</span>
+            </div>
+        </div>
+        <div class="sub-menu" id="relatorioSubMenu">
+            <a href="gerenciamento-relatorio.html" class="nav-link">
+                <div class="icon-title" title="Gerar Relatórios">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span class="item-name">Gerar Relatórios</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="nav-link" onclick="toggleSubMenu('vendaSubMenu')">
+            <div class="icon-title" title="Gerar Vendas">
+                <i class="bi bi-cart"></i>
+                <span class="item-name">Vendas</span>
+            </div>
+        </div>
+        <div class="sub-menu" id="vendaSubMenu">
+            <a href="gerenciamento-venda.html" class="nav-link">
+                <div class="icon-title" title="Sistema de Venda">
+                    <i class="bi bi-cash-stack"></i>
+                    <span class="item-name">Sistema de Venda</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="nav-link" onclick="logout()">
+            <div class="icon-title" title="Sair">
+                <i class="bi bi-box-arrow-right"></i>
+                <span class="item-name">Sair</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="content">
+    <div class="header">
+        <h1>Venda em Aberto</h1>
+    </div>
+    <div class="content-body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                    <th>Editar</th>
+                    <th>Excluir</th>
+                </tr>
+                </thead>
+                <tbody id="tabelaVendas">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="product-code-container">
+            <form>
+                <div class="form-group">
+                    <label for="product-code">Código do Produto:</label>
+                    <input type="text" class="form-control" id="product-code" name="product-code"
+                           placeholder="Digite o código do produto">
+                </div>
+                <button type="button"  onclick="buscarProduto()" class="btn btn-success">Buscar</button>
+                <div class="total">
+
+                </div>
+                <button type="button" onclick="validarCompra()" class="btn btn-success">Finalizar
+                    Compra
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Método de Pagamento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="paymentMethod">Método de Pagamento:</label>
+                        <select class="form-control" id="paymentMethod" name="paymentMethod">
+                            <option value="" selected disabled>Selecione um método</option>
+                            <option value="cartao_credito">Cartão de Crédito</option>
+                            <option value="cartao_debito">Cartão de Débito</option>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="pix">PIX</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="finalizarCompra()">Confirmar Pagamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="./js/venda.js"></script>
+<script src="./js/auth.js"></script>
+
+</body>
+</html>

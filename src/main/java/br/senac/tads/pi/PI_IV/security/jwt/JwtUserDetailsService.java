@@ -1,7 +1,7 @@
 package br.senac.tads.pi.PI_IV.security.jwt;
 
-import br.senac.tads.pi.PI_IV.usuarios.Usuario;
-import br.senac.tads.pi.PI_IV.usuarios.UsuarioRepository;
+import br.senac.tads.pi.PI_IV.usuario.model.Usuario;
+import br.senac.tads.pi.PI_IV.usuario.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,14 +17,12 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username: " + username);
+
         Usuario usuario = usuarioRepository.findByLogin(username);
 
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuário não encontrado");
         }
-
-
         return User.builder()
                 .username(usuario.getLogin())
                 .password(usuario.getSenha())

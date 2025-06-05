@@ -49,6 +49,8 @@ async function salvarDadosUsuario() {
         return;
     }
     alert('Sucesso ao salvar');
+    window.location.reload();
+    return
 }
 
 async function editarDadosUsuario() {
@@ -84,6 +86,8 @@ async function editarDadosUsuario() {
 
     alert('Sucesso ao atualizar ');
     document.getElementById('cadastroForm').reset();
+    window.location.reload();
+    return;
 
 
 }
@@ -150,7 +154,6 @@ async function carregarUsuarios() {
 
 function preencherModalComDados(dados) {
 
-    console.log(dados.nome);
 
     document.getElementById('senha').value = '';
 
@@ -171,7 +174,6 @@ async function excluirItem(id) {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         }
-
     });
 
     if (httpResp.ok) {
@@ -187,15 +189,15 @@ async function editarItem(id) {
     console.log("id " + id);
     const token = localStorage.getItem("token");
     const resposta = await fetch(`/api/usuarios/${id}`, {
-        method: "GET", // opcional, pois GET é o padrão
+        method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
-        }});
+        }
+    });
 
 
     const dados = await resposta.json();
-
 
     idGlobal = id;
     preencherModalComDados(dados);

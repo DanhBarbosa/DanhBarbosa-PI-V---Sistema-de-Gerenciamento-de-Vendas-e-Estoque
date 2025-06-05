@@ -134,27 +134,50 @@ async function listarProdutos() {
             "Authorization": `Bearer ${token}`
         }
     });
-    const produtos = await resposta.json();
+    const dados = await resposta.json();
 
     const estoqueLoja = document.getElementById('estoqueLoja');
     estoqueLoja.innerHTML = '';
 
-    produtos.forEach(produto => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${produto.id}</td>
-            <td>${produto.codigo}</td>
-            <td>${produto.nome}</td>
-            <td>${produto.descricao}</td>
-            <td>${produto.marca}</td>
-            <td>${produto.quantidade}</td>
-            <td>${produto.preco}</td>
-            <td><button class="btn btn-warning btn-sm" onclick="editarProduto(${produto.id})"><i class="fas fa-pencil-alt"></i></button></td>
-            <td><button class="btn btn-info btn-sm" onclick="detalharProduto(${produto.id})"><i class="fas fa-id-card"></i></button></td>
-            <td><button class="btn btn-danger btn-sm" onclick="excluirProduto(${produto.id})"><i class="fas fa-trash-alt"></i></button></td>
-        `;
-        estoqueLoja.appendChild(tr);
-    });
+    if(dados && dados.length > 0 ){
+        dados.forEach(produto => {
+            const linha = document.createElement('tr');
+
+
+            const colunas = [
+                produto.id,
+                produto.codigo,
+                produto.nome,
+                produto.descricao,
+                produto.marca,
+                produto.quantidade,
+                produto.preco,
+
+            ];
+
+
+            colunas.forEach(dado => {
+                const celula = document.createElement('td');
+                celula.textContent = dado;
+                linha.appendChild(celula);
+            });
+
+            const editarCelula = document.createElement('td');
+            editarCelula.innerHTML = '<a href="#" style="color: #343a40"> <i class="fas fa-pencil-alt"></i></a>';
+            editarCelula.addEventListener('click', () => editarProduto(produto.id));
+            linha.appendChild(editarCelula);
+
+
+            const excluirCelula = document.createElement('td');
+            excluirCelula.innerHTML = '<a href="#" style="color: #343a40"><i class="fas fa-trash-alt"></i></a>';
+            excluirCelula.addEventListener('click', () => excluirProduto(produto.id));
+            linha.appendChild(excluirCelula);
+
+            estoqueLoja.appendChild(linha);
+        });
+    }
+
+
 }
 
 async function excluirProduto(id) {
@@ -174,9 +197,7 @@ async function excluirProduto(id) {
     }
 }
 
-function detalharProduto(id) {
-    alert(`Detalhes do Produto ID: ${id}`);
-}
+
 
 window.onload = () => {
     listarProdutos();

@@ -233,34 +233,7 @@
 <script src="./js/auth.js"></script>
 
 <script>
-    function jwtFetch(url, options = {}) {
-        const token = localStorage.getItem("token");
 
-        const headers = {
-            ...(options.headers || {}),
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        };
-
-        return fetch(url, {
-            ...options,
-            headers
-        });
-    }
-
-    async function carregarConteudo() {
-        jwtFetch("/api/usuarios")
-            .then(res => res.json())
-            .then(data => {
-                console.log("Usuários:", data);
-            })
-            .catch(err => {
-                console.error("Erro ao buscar usuários", err);
-                window.location.href = "/login.html"; // redireciona se não autorizado
-            });
-    }
-
-    carregarConteudo();
 </script>
 
 </body>

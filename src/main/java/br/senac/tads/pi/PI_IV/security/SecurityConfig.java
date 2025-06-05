@@ -26,12 +26,12 @@ public class SecurityConfig {
                 .cors(cors -> Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(fo -> fo.sameOrigin()))
-                .formLogin(form -> form.disable()) //
-
+                .formLogin(form -> form.disable())
 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/h2-console/**", "/auth/login", "login.html", "/", "/login", "/logout").permitAll()
-                        .requestMatchers("/index.html", "/gerenciamento-estoque.html",
+                        .requestMatchers("/index.html",
+                                "/gerenciamento-estoque.html",
                                 "/gerenciamento-venda.html",
                                 "/gerenciamento-cadastro.html",
                                 "/gerenciamento-relatorio.html",

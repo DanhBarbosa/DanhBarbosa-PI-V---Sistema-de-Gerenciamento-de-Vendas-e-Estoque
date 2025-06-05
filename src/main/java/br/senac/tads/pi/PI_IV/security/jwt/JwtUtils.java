@@ -58,7 +58,7 @@ public class JwtUtils {
         return new JwtToken(token);
     }
 
-    // gpt
+
     private static Claims getClaimsFromToken(String token) {
         try {
             return Jwts.parser()
@@ -83,7 +83,7 @@ public class JwtUtils {
         return getClaimsFromToken(token).getSubject();
     }
 
-    // gpt
+
     public static boolean isTokenValid(String token) {
         try {
             Jwts.parser()

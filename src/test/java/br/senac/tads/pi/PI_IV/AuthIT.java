@@ -1,6 +1,6 @@
 package br.senac.tads.pi.PI_IV;
 
-import br.senac.tads.pi.PI_IV.auth.UsuarioAuthRequestDTO;
+import br.senac.tads.pi.PI_IV.auth.dto.UsuarioAuthRequestDTO;
 import br.senac.tads.pi.PI_IV.security.jwt.JwtToken;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class AuthIT {
         JwtToken responseBody = webTestClient.post()
                 .uri("auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioAuthRequestDTO("admin@gmail.com", "123456"))
+                .bodyValue(new UsuarioAuthRequestDTO("admin@test.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(JwtToken.class)
@@ -38,7 +38,7 @@ public class AuthIT {
         webTestClient.post()
                 .uri("auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UsuarioAuthRequestDTO("admin@gmail.com", "1234567"))
+                .bodyValue(new UsuarioAuthRequestDTO("admin@test.com", "1234567"))
                 .exchange()
                 .expectStatus().isBadRequest();
     }
